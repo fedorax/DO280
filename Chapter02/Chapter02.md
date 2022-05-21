@@ -57,6 +57,24 @@ oc get deployment
 oc get events
 ```
 
+## ストレージクラス
+
+```
+oc get storageclass
+```
+
+## Persistent Volume Claim
+
+```
+ oc get pvc
+```
+
+## Persistent Volume
+
+```
+ oc get pv
+```
+
 ## Cluster Version
 
 ```
@@ -122,4 +140,31 @@ systemctl status cri-o
 oc debug node/master01
 sh-4.4# chroot /host
 crictl ps --name openvswitch
+```
+
+# PVC
+
+## Add
+
+```
+oc set volumes deployment/postgresql-persistent 
+--add 
+--name postgresql-storage 
+--type pvc 
+--claim-class nfs-storage 
+--claim-mode rwo 
+--claim-size 10Gi 
+--mount-path /var/lib/pgsql 
+--claim-name postgresql-storage
+
+ oc get pvc
+```
+
+# Application
+
+## PostgreSQL
+
+```
+podman login registry.redhat.io
+oc new-app --docker-image registry.redhat.io/rhel8/postgresql-13:1-7 -e POSTGRESQL_USER=redhat -e POSTGRESQL_PASSWORD=redhat123 -e POSTGRESQL_DATABASE=persistentdb --name postgresql-persistent 
 ```
